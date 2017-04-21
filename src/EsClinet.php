@@ -8,10 +8,7 @@
 
 namespace TJDS\Phplib;
 
-define('LIB_PATH', __DIR__);
-require_once __DIR__ . '/vendor/autoload.php';
-
-use \ElasticSearch\Client;
+use ElasticSearch\Client;
 
 class EsClinet
 {

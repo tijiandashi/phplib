@@ -94,12 +94,6 @@ class Trace
         if( self::getValid() == 0) {
             return false;
         }
-//
-//        foreach (self::$_docTrace as &$item) {
-//            if( isset($item['result']) ) {
-//                unset($item['result']);
-//            }
-//        }
         return array_values(self::$_docTrace);
     }
 
