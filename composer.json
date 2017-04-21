@@ -1,7 +1,6 @@
 {
     "name": "tijiandashi/phplib",
     "description": "tijiandashi phplib",
-    "minimum-stability": "stable",
     "version": "1.0.0",
     "type": "library",
     "license": "MIT",
