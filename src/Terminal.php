@@ -26,14 +26,4 @@ class Terminal{
         }
         return self::PC;
     }
-
-    public static function checkHeader($trim = false)
-    {
-        $host = $_SERVER['HTTP_HOST'];
-        $hostArr = explode(".", $host);
-        if (count($hostArr) == 3 && $trim == true) {
-            array_shift($hostArr);
-        }
-        return $hostArr;
-    }
 }
