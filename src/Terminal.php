@@ -27,15 +27,13 @@ class Terminal{
         return self::PC;
     }
 
-    public static function checkHeader()
+    public static function checkHeader($trim = false)
     {
         $host = $_SERVER['HTTP_HOST'];
         $hostArr = explode(".", $host);
-        if(count($hostArr) == 3) {
+        if (count($hostArr) == 3 && $trim == true) {
             array_shift($hostArr);
         }
-        array_unshift($hostArr, "m");
-        $newUrl = implode(".", $hostArr);
-        header("Location: http://$newUrl");
+        return $hostArr;
     }
 }

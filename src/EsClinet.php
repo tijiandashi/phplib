@@ -19,17 +19,17 @@ class EsClinet
     private function _clone(){
     }
 
-    public static function getInstance( $key = "jigou")
+    public static function getInstance( $config )
     {
-        if( ! isset(self::$_instance[$key]) || self::$_instance[$key] == null) {
-            self::$_instance[$key] = Client::connection("http://127.0.0.1:9200/dashi/$key");
+        if( ! isset(self::$_instance[$config]) || self::$_instance[$config] == null) {
+            self::$_instance[$config] = Client::connection($config);
         }
-        return self::$_instance[$key];
+        return self::$_instance[$config];
     }
 
-    public static function query($param, $key="jigou")
+    public static function query($param, $config="http://127.0.0.1:9200/dashi/jigou")
     {
-        $esClinet = self::getInstance($key);
+        $esClinet = self::getInstance($config);
         $ret = $esClinet->search($param);
 
         $output['total'] = $ret['hits']['total'];
@@ -42,9 +42,9 @@ class EsClinet
         return $output;
     }
 
-    public static function get($id, $key="jigou")
+    public static function get($id, $config="http://127.0.0.1:9200/dashi/jigou" )
     {
-        $esClinet = self::getInstance($key);
+        $esClinet = self::getInstance($config);
         $ret = $esClinet ->get($id);
         return $ret;
     }
