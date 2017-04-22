@@ -8,7 +8,7 @@
 namespace TJDS\Phplib;
 
 
-class ModelCommon extends \Phalcon\Mvc\Model
+class BaseModel extends \Phalcon\Mvc\Model
 {
     // 如 findByCidAndGid
     public function __call($name, $arguments)
