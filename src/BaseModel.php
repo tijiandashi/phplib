@@ -18,7 +18,13 @@ class BaseModel extends \Phalcon\Mvc\Model
         }
 
         $params = str_replace('findBy', '', $name);
-        $paramArr = explode("And", $params);
+
+        $opType = "And";
+        if( strpos($name, "Or") != false) {
+            $opType = "Or";
+        }
+
+        $paramArr = explode($opType, $params);
         $paramKeyArr = [];
         foreach ($paramArr as $value){
             if( trim($value) != ""){
@@ -34,7 +40,7 @@ class BaseModel extends \Phalcon\Mvc\Model
         }
 
         $param = [
-            'conditions' => implode(" AND ", $conditions),
+            'conditions' => implode(" $opType ", $conditions),
             'binds' => $binds,
         ];
 
