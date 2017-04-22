@@ -1,10 +1,10 @@
 <?php
 /**
-* Created by PhpStorm.
-* User: liujun
-* Date: 2017/4/20
-* Time: 23:17
-*/
+ * Created by PhpStorm.
+ * User: liujun
+ * Date: 2017/4/20
+ * Time: 23:17
+ */
 namespace TJDS\Lib;
 
 
@@ -76,7 +76,7 @@ class BaseModel extends \Phalcon\Mvc\Model
             $stmt = $pdo->prepare( $sqlPre );
             $res = $stmt ->execute( $binds);
             if($res != false){
-                $stmt->setFetchMode(Phalcon\DB::FETCH_ASSOC);
+                $stmt->setFetchMode(\Phalcon\DB::FETCH_ASSOC);
                 $res =  $stmt->fetchAll();
             }
 
@@ -97,17 +97,19 @@ class BaseModel extends \Phalcon\Mvc\Model
         }
     }
 
-    public function getDi($key, $share=false)
+    public function getFacade($key, $share=false)
     {
         $function = ( $share == "true") ? 'getShared' : 'get';
         return $this->getDI()->$function($key);
     }
 
 
-    public function setDi($key, $value, $share=false)
+    public function setFacade($key, $value, $share=false)
     {
         $function = ( $share == "true") ? 'setShared' : 'set';
-        return $this->getDI()->$function($key, $value);
+        $this->getDI()->$function($key, function() use ($value) {
+            return $value;
+        });
     }
 
     public function execs($pdo, $sqlPre, $binds)
@@ -236,7 +238,7 @@ class BaseModel extends \Phalcon\Mvc\Model
     {
         try{
             $result = $this->getDI()->getShared('db')->query($sql);
-            $result->setFetchMode(Phalcon\DB::FETCH_ASSOC);
+            $result->setFetchMode(\Phalcon\DB::FETCH_ASSOC);
             $resultArr = $result->fetchAll();
             if( Trace::getInstance()->getValid()== 1) {
                 $key = $sql." ;".time();
@@ -273,30 +275,4 @@ class BaseModel extends \Phalcon\Mvc\Model
             throw new LibException( LibException::SYS_ERR );
         }
     }
-
-    /*
-     * 保存
-     */
-    public function saveDb()
-    {
-        $vars = $this->ToArray();
-        foreach($vars as $key => $value) {
-            if( $key != $this->getPKey() &&  trim($value)  == "" ){
-                $this->$key = new \Phalcon\Db\RawValue('""');
-            }
-        }
-
-        if ($this->save() == false) {
-            $errorMsgArr[] = "";
-            foreach ($this->getMessages() as $message) {
-                $errorMsgArr[] = $message->getMessage();
-            }
-            var_dump($errorMsgArr);
-            // \Dashi\Library\Log::fatal( sprintf( "db fail, param is [%s], msg [%s] ",
-            //  	var_export($this->ToArray(), true), var_export($errorMsgArr, true)) );
-            throw new LibException( LibException::INTER_ERR );
-        }
-        return true;
-    }
-
 }
