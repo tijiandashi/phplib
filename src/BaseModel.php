@@ -97,6 +97,19 @@ class BaseModel extends \Phalcon\Mvc\Model
         }
     }
 
+    public function getDi($key, $share=false)
+    {
+        $function = ( $share == "true") ? 'getShared' : 'get';
+        return $this->getDI()->$function($key);
+    }
+
+
+    public function setDi($key, $value, $share=false)
+    {
+        $function = ( $share == "true") ? 'setShared' : 'set';
+        return $this->getDI()->$function($key, $value);
+    }
+
     public function execs($pdo, $sqlPre, $binds)
     {
         try{
