@@ -1,5 +1,5 @@
 <?php
-namespace TJDS\Phplib;
+namespace TJDS\Lib;
 
 use Qiniu\Auth;
 use Qiniu\Storage\UploadManager;

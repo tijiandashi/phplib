@@ -5,7 +5,7 @@
  * Date: 2017/4/22
  * Time: 下午4:40
  */
-namespace TJDS\Phplib;
+namespace TJDS\Lib;
 
 class LibException extends \Exception
 {

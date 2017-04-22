@@ -6,7 +6,7 @@
  * Time: 23:25
  */
 
-namespace TJDS\Phplib;
+namespace TJDS\Lib;
 
 use ElasticSearch\Client;
 

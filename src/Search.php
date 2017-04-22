@@ -6,7 +6,7 @@
  * Time: 23:22
  */
 
-namespace TJDS\Phplib;
+namespace TJDS\Lib;
 
 class Search
 {

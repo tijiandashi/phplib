@@ -6,7 +6,7 @@
  * Time: 下午8:15
  */
 
-namespace TJDS\Phplib;
+namespace TJDS\Lib;
 
 class Request {
 

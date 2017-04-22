@@ -5,7 +5,7 @@
  * Date: 2017/4/20
  * Time: 23:19
  */
-namespace TJDS\Phplib;
+namespace TJDS\Lib;
 
 class Terminal{
     const UNKNOWN = 0;

@@ -6,7 +6,7 @@
  * Time: 23:19
  */
 
-namespace TJDS\Phplib;
+namespace TJDS\Lib;
 
 class Trace
 {

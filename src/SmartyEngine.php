@@ -5,7 +5,7 @@
  * Date: 2017/4/20
  * Time: 23:18
  */
-namespace TJDS\Phplib;
+namespace TJDS\Lib;
 
 use Phalcon\DiInterface;
 use Phalcon\Mvc\View\Engine;
