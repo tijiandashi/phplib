@@ -74,18 +74,18 @@ class BaseModel extends \Phalcon\Mvc\Model
                 $res =  $stmt->fetchAll();
             }
 
-            if(  \Dashi\Library\Trace::getInstance()->getValid() == 1) {
+            if(  Trace::getInstance()->getValid() == 1) {
                 $key = $sqlPre." ;".time();
                 $debugStr = $this->getDebugStr($sqlPre, $binds);
-                \Dashi\Library\Trace::getInstance()->add($key, $debugStr, $res);
+                Trace::getInstance()->add($key, $debugStr, $res);
             }
             return $res;
 
         }catch ( \Exception $e ){
-            if(  \Dashi\Library\Trace::getInstance()->getValid() == 1) {
+            if(  Trace::getInstance()->getValid() == 1) {
                 $key = $sqlPre." ;".time();
                 $debugStr = $this->getDebugStr($sqlPre, $binds);
-                \Dashi\Library\Trace::getInstance()->add($key, $debugStr, $e->getMessage() );
+                Trace::getInstance()->add($key, $debugStr, $e->getMessage() );
             }
             throw new LibException( LibException::SYS_ERR );
         }
@@ -96,17 +96,17 @@ class BaseModel extends \Phalcon\Mvc\Model
         try{
             $stmt = $pdo->prepare( $sqlPre );
             $res = $stmt ->execute( $binds);
-            if( \Dashi\Library\Trace::getInstance()->getValid()== 1) {
+            if( Trace::getInstance()->getValid()== 1) {
                 $key = $sqlPre." ;".time();
                 $debugStr = $this->getDebugStr($sqlPre, $binds);
-                \Dashi\Library\Trace::getInstance()->add($key, $debugStr, $res);
+                Trace::getInstance()->add($key, $debugStr, $res);
             }
             return $res;
         }catch ( \Exception $e ){
-            if(  \Dashi\Library\Trace::getInstance()->getValid() == 1) {
+            if(  Trace::getInstance()->getValid() == 1) {
                 $key = $sqlPre." ;".time();
                 $debugStr = $this->getDebugStr($sqlPre, $binds);
-                \Dashi\Library\Trace::getInstance()->add($key, $debugStr, $e->getMessage() );
+                Trace::getInstance()->add($key, $debugStr, $e->getMessage() );
             }
             throw new LibException( LibException::SYS_ERR );
         }
@@ -219,15 +219,15 @@ class BaseModel extends \Phalcon\Mvc\Model
             $result = $this->getDI()->getShared('db')->query($sql);
             $result->setFetchMode(Phalcon\DB::FETCH_ASSOC);
             $resultArr = $result->fetchAll();
-            if( \Dashi\Library\Trace::getInstance()->getValid()== 1) {
+            if( Trace::getInstance()->getValid()== 1) {
                 $key = $sql." ;".time();
-                \Dashi\Library\Trace::getInstance()->add($key, $sql, $resultArr );
+                Trace::getInstance()->add($key, $sql, $resultArr );
             }
             return $resultArr;
         }catch (\Exception $e ) {
-            if( \Dashi\Library\Trace::getInstance()->getValid()== 1) {
+            if( Trace::getInstance()->getValid()== 1) {
                 $key = $sql." ;".time();
-                \Dashi\Library\Trace::getInstance()->add($key, $sql, $e->getMessage());
+                Trace::getInstance()->add($key, $sql, $e->getMessage());
             }
             throw new LibException( LibException::SYS_ERR );
         }
@@ -241,15 +241,15 @@ class BaseModel extends \Phalcon\Mvc\Model
     {
         try{
             $result = $this->getDI()->getShared('db')->execute($sql);
-            if( \Dashi\Library\Trace::getInstance()->getValid()== 1) {
+            if( Trace::getInstance()->getValid()== 1) {
                 $key = $sql." ;".time();
-                \Dashi\Library\Trace::getInstance()->add($key, $sql, $result);
+                Trace::getInstance()->add($key, $sql, $result);
             }
             return $result;
         }catch (\Exception $e ) {
-            if( \Dashi\Library\Trace::getInstance()->getValid()== 1) {
+            if( Trace::getInstance()->getValid()== 1) {
                 $key = $sql." ;".time();
-                \Dashi\Library\Trace::getInstance()->add($key, $sql, $e->getCode().":".$e->getMessage());
+                Trace::getInstance()->add($key, $sql, $e->getCode().":".$e->getMessage());
             }
             throw new LibException( LibException::SYS_ERR );
         }
