@@ -145,6 +145,9 @@ class BaseModel extends \Phalcon\Mvc\Model
         $valueArr = [];
 
         foreach($data as $key => $value){
+            if( $value == null){
+                continue;
+            }
             $paramArr[] = trim($key);
             $valuePArr[] = ":$key";
             $valueArr[":$key"] = $value;
@@ -175,6 +178,11 @@ class BaseModel extends \Phalcon\Mvc\Model
             if( $key == "saveBy"){
                 continue;
             }
+
+            if( $value == null){
+                continue;
+            }
+
             $paramArr[] = trim($key). "=:". $key;
             if( is_array($value)){
                 $value = implode(",", $value);
@@ -190,6 +198,35 @@ class BaseModel extends \Phalcon\Mvc\Model
         return $this->execs($pdo, $sqlPre, $valueArr);
     }
 
+    /*
+     * 删除
+     */
+    public function delete($data)
+    {
+        if( ! isset($data['delBy']) ) {
+            return true;
+        }
+
+        $delBy = trim($data['delBy']);
+        if( ! isset($data[$delBy])) {
+            return false;
+        }
+
+        $valueArr = "";
+        if( is_array( $data[$delBy] )) {
+
+            if( count($data[$delBy]) == 0 ){
+                return true;
+            }
+            $valueArr [ ":$delBy" ] =  implode(' OR ', $data[$delBy]);
+        }else {
+            $valueArr [ ":$delBy"  ] =  $data[$delBy];
+        }
+
+        $pdo = $this->getDI()->getShared('db');
+        $sqlPre = "DELETE FROM  ".$this->getSource(). " WHERE $delBy= (:$delBy)";
+        return $this->execs($pdo, $sqlPre, $valueArr);
+    }
 
 
     /*
@@ -281,7 +318,7 @@ class BaseModel extends \Phalcon\Mvc\Model
      */
     public function begin()
     {
-        $this->getDI()->getShared('db')->query("BEGIN");
+        return $this->getDI()->getShared('db')->query("BEGIN");
     }
 
     /*
@@ -289,7 +326,7 @@ class BaseModel extends \Phalcon\Mvc\Model
      */
     public function commit()
     {
-        $this->getDI()->getShared('db')->query("COMMIT");
+        return $this->getDI()->getShared('db')->query("COMMIT");
     }
 
     /*
@@ -297,6 +334,6 @@ class BaseModel extends \Phalcon\Mvc\Model
      */
     public function rollback()
     {
-        $this->getDI()->getShared('db')->query("ROLLBACK");
+        return $this->getDI()->getShared('db')->query("ROLLBACK");
     }
 }
