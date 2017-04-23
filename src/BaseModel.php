@@ -275,4 +275,28 @@ class BaseModel extends \Phalcon\Mvc\Model
             throw new LibException( LibException::SYS_ERR );
         }
     }
+
+    /*
+     * 开始事务
+     */
+    public function begin()
+    {
+        $this->getDI()->getShared('db')->query("BEGIN");
+    }
+
+    /*
+     * 提交事务
+     */
+    public function commit()
+    {
+        $this->getDI()->getShared('db')->query("COMMIT");
+    }
+
+    /*
+     * 回滚事务
+     */
+    public function rollback()
+    {
+        $this->getDI()->getShared('db')->query("ROLLBACK");
+    }
 }
