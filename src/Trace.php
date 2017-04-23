@@ -12,12 +12,12 @@ class Trace
 {
     private static $_instance = null;
     private static $_docTrace = [];
-    public $debug = 0;
+    public static $debug = 0;
 
     public function __construct()
     {
         self::$_docTrace = [];
-        $this->debug = 0;
+        self::$debug = 0;
     }
 
     public static function getInstance()
@@ -30,7 +30,7 @@ class Trace
 
     public function setDebug($debug)
     {
-        $this->debug = $debug;
+        self::$debug = $debug;
     }
 
     private static function _getStr($str, $paramArr, $resArr, $depth=0)
@@ -97,8 +97,8 @@ class Trace
         return array_values(self::$_docTrace);
     }
 
-    public function getValid()
+    public static function getValid()
     {
-        return $this->debug;
+        return self::$debug;
     }
 }
