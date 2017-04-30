@@ -57,81 +57,45 @@ class BaseModel extends \Phalcon\Mvc\Model
         return $this->finds($param);
     }
 
+    /*
+     * 查找
+     */
+    public function finds($data)
+    {
+        $pdo = $this->getDI()->getShared('db');
+        $columns = "*";
+        if( isset($data['columns']) ) {
+            $columns = trim($data['columns']);
+        }
+        // sql pre
+        $sqlPre = "SELECT $columns FROM ". $this->getSource();
+        if( isset($data['conditions']) && trim($data['conditions']) != "" ){
+            $sqlPre .= " WHERE ". trim($data['conditions']);
+        }
+
+        if( isset($data['order']) ) {
+            $sqlPre .= " ORDER BY ".$data['order'];
+        }else {
+            $sqlPre .= " ORDER BY update_time DESC ";
+        }
+
+        $binds = isset($data['binds']) ? $data['binds'] : [];
+        return $this->querys($pdo, $sqlPre, $binds);
+    }
 
     /*
-     * 获得debug str
+     *  查找第一个
      */
-    protected function getDebugStr($sqlPre, $binds){
-        $debugSql = $sqlPre;
-        foreach($binds as $key => $value){
-            $debugSql = str_replace($key, "'$value'", $debugSql);
-        }
-        return $debugSql;
-    }
-
-
-    public function querys($pdo, $sqlPre, $binds)
+    public function findFirsts($param)
     {
-        try{
-            $stmt = $pdo->prepare( $sqlPre );
-            $res = $stmt ->execute( $binds);
-            if($res != false){
-                $stmt->setFetchMode(\Phalcon\DB::FETCH_ASSOC);
-                $res =  $stmt->fetchAll();
-            }
-
-            if(  Trace::getInstance()->getValid() == 1) {
-                $key = $sqlPre." ;".time();
-                $debugStr = $this->getDebugStr($sqlPre, $binds);
-                Trace::getInstance()->add($key, $debugStr, $res);
-            }
-            return $res;
-
-        }catch ( \Exception $e ){
-            if(  Trace::getInstance()->getValid() == 1) {
-                $key = $sqlPre." ;".time();
-                $debugStr = $this->getDebugStr($sqlPre, $binds);
-                Trace::getInstance()->add($key, $debugStr, $e->getMessage() );
-            }
-            throw new LibException( LibException::SYS_ERR );
+        $result = $this->finds($param);
+        if(count($result) > 0){
+            return $result[0];
+        }else {
+            return [];
         }
     }
 
-    public function getFacade($key, $share=false)
-    {
-        $function = ( $share == "true") ? 'getShared' : 'get';
-        return $this->getDI()->$function($key);
-    }
-
-
-    public function setFacade($key, $value, $share=false)
-    {
-        $function = ( $share == "true") ? 'setShared' : 'set';
-        $this->getDI()->$function($key, function() use ($value) {
-            return $value;
-        });
-    }
-
-    public function execs($pdo, $sqlPre, $binds)
-    {
-        try{
-            $stmt = $pdo->prepare( $sqlPre );
-            $res = $stmt ->execute( $binds);
-            if( Trace::getInstance()->getValid()== 1) {
-                $key = $sqlPre." ;".time();
-                $debugStr = $this->getDebugStr($sqlPre, $binds);
-                Trace::getInstance()->add($key, $debugStr, $res);
-            }
-            return $res;
-        }catch ( \Exception $e ){
-            if(  Trace::getInstance()->getValid() == 1) {
-                $key = $sqlPre." ;".time();
-                $debugStr = $this->getDebugStr($sqlPre, $binds);
-                Trace::getInstance()->add($key, $debugStr, $e->getMessage() );
-            }
-            throw new LibException( LibException::SYS_ERR );
-        }
-    }
 
     /*
      * 插入
@@ -228,50 +192,64 @@ class BaseModel extends \Phalcon\Mvc\Model
         return $this->execs($pdo, $sqlPre, $valueArr);
     }
 
-
     /*
-     * 查找
+     *  pdo查询
      */
-    public function finds($data)
+    public function querys($pdo, $sqlPre, $binds)
     {
-        $pdo = $this->getDI()->getShared('db');
-        $columns = "*";
-        if( isset($data['columns']) ) {
-            $columns = trim($data['columns']);
-        }
-        // sql pre
-        $sqlPre = "SELECT $columns FROM ". $this->getSource();
-        if( isset($data['conditions']) && trim($data['conditions']) != "" ){
-            $sqlPre .= " WHERE ". trim($data['conditions']);
-        }
+        try{
+            $stmt = $pdo->prepare( $sqlPre );
+            $res = $stmt ->execute( $binds);
+            if($res != false){
+                $stmt->setFetchMode(\Phalcon\DB::FETCH_ASSOC);
+                $res =  $stmt->fetchAll();
+            }
 
-        if( isset($data['order']) ) {
-            $sqlPre .= " ORDER BY ".$data['order'];
-        }else {
-            $sqlPre .= " ORDER BY update_time DESC ";
-        }
+            if(  Trace::getInstance()->getValid() == 1) {
+                $key = $sqlPre." ;".time();
+                $debugStr = $this->getDebugStr($sqlPre, $binds);
+                Trace::getInstance()->add($key, $debugStr, $res);
+            }
+            return $res;
 
-        $binds = isset($data['binds']) ? $data['binds'] : [];
-        return $this->querys($pdo, $sqlPre, $binds);
-    }
-
-    /*
-     *  查找第一个
-     */
-    public function findFirsts($param)
-    {
-        $result = $this->finds($param);
-        if(count($result) > 0){
-            return $result[0];
-        }else {
-            return [];
+        }catch ( \Exception $e ){
+            if(  Trace::getInstance()->getValid() == 1) {
+                $key = $sqlPre." ;".time();
+                $debugStr = $this->getDebugStr($sqlPre, $binds);
+                Trace::getInstance()->add($key, $debugStr, $e->getMessage() );
+            }
+            throw new LibException( LibException::SYS_ERR );
         }
     }
 
     /*
-    * 查询
+     * pdo 执行
+     */
+    public function execs($pdo, $sqlPre, $binds)
+    {
+        try{
+            $stmt = $pdo->prepare( $sqlPre );
+            $res = $stmt ->execute( $binds);
+            if( Trace::getInstance()->getValid()== 1) {
+                $key = $sqlPre." ;".time();
+                $debugStr = $this->getDebugStr($sqlPre, $binds);
+                Trace::getInstance()->add($key, $debugStr, $res);
+            }
+            return $res;
+        }catch ( \Exception $e ){
+            if(  Trace::getInstance()->getValid() == 1) {
+                $key = $sqlPre." ;".time();
+                $debugStr = $this->getDebugStr($sqlPre, $binds);
+                Trace::getInstance()->add($key, $debugStr, $e->getMessage() );
+            }
+            throw new LibException( LibException::SYS_ERR );
+        }
+    }
+
+    /*
+    * 查询原始sql
     */
-    public function q($sql)
+    public function queryRaw($sql)
     {
         try{
             $result = $this->getDI()->getShared('db')->query($sql);
@@ -289,13 +267,12 @@ class BaseModel extends \Phalcon\Mvc\Model
             }
             throw new LibException( LibException::SYS_ERR );
         }
-
     }
 
     /*
-     * 执行
+     * 执行原始sql
      */
-    public function e($sql)
+    public function execRaw($sql)
     {
         try{
             $result = $this->getDI()->getShared('db')->execute($sql);
@@ -311,6 +288,32 @@ class BaseModel extends \Phalcon\Mvc\Model
             }
             throw new LibException( LibException::SYS_ERR );
         }
+    }
+
+    public function getFacade($key, $share=false)
+    {
+        $function = ( $share == "true") ? 'getShared' : 'get';
+        return $this->getDI()->$function($key);
+    }
+
+
+    public function setFacade($key, $value, $share=false)
+    {
+        $function = ( $share == "true") ? 'setShared' : 'set';
+        $this->getDI()->$function($key, function() use ($value) {
+            return $value;
+        });
+    }
+
+    /*
+    * 获得debug str
+    */
+    protected function getDebugStr($sqlPre, $binds){
+        $debugSql = $sqlPre;
+        foreach($binds as $key => $value){
+            $debugSql = str_replace($key, "'$value'", $debugSql);
+        }
+        return $debugSql;
     }
 
     /*
