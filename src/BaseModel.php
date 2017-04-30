@@ -47,7 +47,7 @@ class BaseModel extends \Phalcon\Mvc\Model
         if ( isset($arguments[0]['order'] ) ){
             $param['order'] = $arguments[0]['order'];
         }else {
-            $param['order'] = " update_time DESC ";
+            $param['order'] = " updateTime DESC ";
         }
 
         if ( isset($arguments[0]['columns'] ) ){
