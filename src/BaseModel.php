@@ -20,8 +20,8 @@ class BaseModel extends \Phalcon\Mvc\Model
         $params = str_replace('findBy', '', $name);
 
         $opType = "And";
-        if( strpos($name, "Or") != false) {
-            $opType = "Or";
+        if( strpos($name, "OR") != false) {
+            $opType = "OR";
         }
 
         $paramArr = explode($opType, $params);
