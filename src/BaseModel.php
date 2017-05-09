@@ -96,6 +96,31 @@ class BaseModel extends \Phalcon\Mvc\Model
         }
     }
 
+    /*
+    * 总数
+    */
+    public function total($data)
+    {
+        $pdo = $this->getDI()->getShared('db');
+
+        $conditions = [];
+        $binds = [];
+
+        foreach ($data as $key => $value) {
+            $conditions[] = " $key= :$key";
+            $binds[ ":$key" ] = $value;
+        }
+
+        // sql pre
+        $sqlPre = "SELECT COUNT(*) AS cnt FROM ". $this->getSource();
+        if( count($$conditions) > 0 ){
+            $sqlPre .= " WHERE ". implode(" AND ", $conditions);
+        }
+
+        $res = $this->querys($pdo, $sqlPre, $binds);
+        return intval($res['cnt']);
+    }
+
 
     /*
      * 插入
