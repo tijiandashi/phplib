@@ -50,6 +50,10 @@ class BaseModel extends \Phalcon\Mvc\Model
             $param['order'] = " updateTime DESC ";
         }
 
+        if ( isset($arguments[0]['limit'] ) ){
+            $param['limit'] = $arguments[0]['limit'];
+        }
+
         if ( isset($arguments[0]['columns'] ) ){
             $param['columns'] = $arguments[0]['columns'];
         }
@@ -76,7 +80,11 @@ class BaseModel extends \Phalcon\Mvc\Model
         if( isset($data['order']) ) {
             $sqlPre .= " ORDER BY ".$data['order'];
         }else {
-            $sqlPre .= " ORDER BY update_time DESC ";
+            $sqlPre .= " ORDER BY updateTime DESC ";
+        }
+
+        if( isset($data['limit']) ) {
+            $sqlPre .= " LIMIT ". $data['limit'];
         }
 
         $binds = isset($data['binds']) ? $data['binds'] : [];
