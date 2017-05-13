@@ -4,9 +4,6 @@ namespace TJDS\Lib;
 use Qiniu\Auth;
 use Qiniu\Storage\UploadManager;
 
-use Qiniu\Auth;
-use Qiniu\Storage\UploadManager;
-
 class QiniuClient
 {
     const AK= "uK5hYhgItfyK7FrStqgTX3W61S8c1ztohngHZfFS";
