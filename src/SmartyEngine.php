@@ -22,6 +22,7 @@ class SmartyEngine extends Engine implements EngineInterface
      * @var \Smarty
      */
     protected $smarty;
+    protected  $di;
     /**
      * {@inheritdoc}
      *
@@ -39,7 +40,14 @@ class SmartyEngine extends Engine implements EngineInterface
         $this->smarty->debugging    = true;
         $this->smarty ->left_delimiter= "{% ";
         $this->smarty ->right_delimiter= " %}";
+        $this->di = $di;
         parent::__construct($view, $di);
+        $tpl =  trim($this->di->getShared('tpl'));
+
+        if( $tpl != "" && $tpl !== false) {
+            $this->smarty->assign('data', $this->di->getShared('data'));
+            $this->smarty->display($tpl);
+        }
     }
     /**
      * {@inheritdoc}
